@@ -27,3 +27,9 @@ Please configure:
 
 1. Path to ruby executable (for using Ripper)
 2. Path to for file storage 
+
+---
+
+Future:
+
+- https://github.com/distribworks/dkron Distributed, fault tolerant job scheduling system
