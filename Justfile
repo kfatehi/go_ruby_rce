@@ -1,5 +1,11 @@
-start:
-	go run main.go
+assets:
+	go run github.com/jessevdk/go-assets-builder assets -o assets.go
 
-test:
-	go test main.go main_test.go
+start: assets
+	go run .
+
+test: assets
+	go test
+
+build: assets
+	go build

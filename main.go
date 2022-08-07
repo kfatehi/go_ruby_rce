@@ -44,12 +44,17 @@ func setupRouter() *gin.Engine {
 
 	// curl -XPOST localhost:8080/ruby/validate -F file=script.rb
 	ruby.POST("/validate", func(ctx *gin.Context) {
-		rubyCmd := exec.Command(getRuby(), "-e", `
-			require 'ripper'
-			require 'json'
-			sexp = Ripper.sexp(ARGF)
-			puts JSON.generate sexp
-		`)
+		val, err := Assets.Open("/assets/validator.rb")
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, "asset open error: %s", err.Error())
+			return
+		}
+		valsrc, err := ioutil.ReadAll(val)
+		if err != nil {
+			ctx.String(http.StatusInternalServerError, "asset read error: %s", err.Error())
+			return
+		}
+		rubyCmd := exec.Command(getRuby(), "-e", string(valsrc))
 		stdin, err := rubyCmd.StdinPipe()
 		if err != nil {
 			ctx.String(http.StatusInternalServerError, "stdin creation error: %s", err.Error())
