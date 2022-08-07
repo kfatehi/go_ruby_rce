@@ -7,14 +7,23 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
+func getFixture(name string) string {
+	mydir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	return filepath.Join(mydir, "test_support", name)
+}
+
 func TestPingRoute(t *testing.T) {
 	router := setupRouter()
-	filePath := "/home/keyvan/ruby_rce/testscript.rb"
+	filePath := getFixture("testscript.rb")
 	fieldName := "file"
 	body := new(bytes.Buffer)
 

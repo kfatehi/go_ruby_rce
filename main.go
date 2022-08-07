@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// getEnv get key environment variable if exist otherwise return defalutValue
 func getEnv(key, defaultValue string) string {
 	value := os.Getenv(key)
 	if len(value) == 0 {
