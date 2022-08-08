@@ -4,7 +4,8 @@ This dangerous project is intended to run on a private network behind a firewall
 Only authorized users should be able to cause interactions with this program!
 
 This program provides a simple API for validation and execution of ruby scripts.
-It is designed to facilitate routine script verification and execution a web app.
+It is designed to facilitate script execution for Ruby on Rails apps where employees
+create ruby scripts for customer support purposes.
 
 The main web application should use it to do the following (via protected routes):
 
