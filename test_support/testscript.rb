@@ -8,7 +8,7 @@ end
 
 run
 
-def run foo, some_arr=[1,2,"chaos"], bar="hi", baz={ping: pong}, dry_run: true, other_thing: nil, hi: "bye", &block
+def run foo, a=nil, some_arr=[1,2,"chaos"], bar="hi", baz={ping: pong}, dry_run: true, other_thing: nil, hi: "bye", &block
     puts "some stuff"
 end
 
