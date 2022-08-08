@@ -21,12 +21,10 @@ func getFixture(name string) string {
 	return filepath.Join(mydir, "test_support", name)
 }
 
-func TestPingRoute(t *testing.T) {
+func TestRubyValidateProper(t *testing.T) {
 	router := setupRouter()
-	filePath := getFixture("testscript.rb")
-	fieldName := "file"
+	filePath := getFixture("proper.rb")
 	body := new(bytes.Buffer)
-
 	mw := multipart.NewWriter(body)
 
 	file, err := os.Open(filePath)
@@ -34,7 +32,7 @@ func TestPingRoute(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	w, err := mw.CreateFormFile(fieldName, filePath)
+	w, err := mw.CreateFormFile("file", filePath)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,5 +53,5 @@ func TestPingRoute(t *testing.T) {
 	router.ServeHTTP(res, req)
 
 	assert.Equal(t, http.StatusOK, res.Code)
-	assert.Equal(t, "pong", res.Body.String())
+	assert.Equal(t, `[{"name":"foo","required":true},{"name":"a","required":false},{"name":"some_arr","required":false},{"name":"bar","required":false},{"name":"baz","required":false},{"name":"dry_run:","required":false},{"name":"other_thing:","required":false},{"name":"hi:","required":false}]`+"\n", res.Body.String())
 }
