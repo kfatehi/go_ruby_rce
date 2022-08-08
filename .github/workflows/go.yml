@@ -2,22 +2,11 @@ name: Go
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-  release:
-    types: [created]
+    tags:
+    - '*'
 
 jobs:
-  prJob:    
-    name: Print info
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print GitHub event action
-        run: |
-          echo "${{ github.event.action }}"
   build:
-    if: ${{ github.event.action }} != 'release'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
