@@ -103,3 +103,5 @@ Configurations are provided via environment variables
 Future consideration:
 
 - https://github.com/distribworks/dkron Distributed, fault tolerant job scheduling system
+
+actually, using dkron for the execution system might be pay off nicely in not having to write the more choreish parts of the next two APIs (execute and status).
