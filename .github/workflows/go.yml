@@ -23,7 +23,6 @@ jobs:
       run: go test -v ./...
 
   releases-matrix:
-    if: ${{ github.event.action }} == 'release'
     name: Release Go Binary
     runs-on: ubuntu-latest
     strategy:
