@@ -40,34 +40,38 @@ func setupRouter() *gin.Engine {
 
 	r.MaxMultipartMemory = 8 << 20 // 8 MiB
 
+	internalError := func(ctx *gin.Context) {
+		ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
+	}
+
 	ruby := r.Group("/ruby")
 
 	// curl -XPOST localhost:8080/ruby/validate -F file=script.rb
 	ruby.POST("/validate", func(ctx *gin.Context) {
 		val, err := Assets.Open("/assets/validator.rb")
 		if err != nil {
-			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
+			internalError(ctx)
 			return
 		}
 		valsrc, err := ioutil.ReadAll(val)
 		if err != nil {
-			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
+			internalError(ctx)
 			return
 		}
 		rubyCmd := exec.Command(getRuby(), "-e", string(valsrc))
 		stdin, err := rubyCmd.StdinPipe()
 		if err != nil {
-			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
+			internalError(ctx)
 			return
 		}
 		file, err := ctx.FormFile("file")
 		if err != nil {
-			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
+			internalError(ctx)
 			return
 		}
 		openedFile, err := file.Open()
 		if err != nil {
-			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
+			internalError(ctx)
 			return
 		}
 		sourceCode, _ := ioutil.ReadAll(openedFile)
@@ -91,6 +95,11 @@ func main() {
 	router := setupRouter()
 
 	listenStr := getEnv("LISTEN_ADDR", "localhost") + ":" + getEnv("LISTEN_PORT", "8080")
+	err := router.Run(listenStr)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+		return
+	}
 	fmt.Println("Listening on", listenStr)
-	router.Run(listenStr)
 }

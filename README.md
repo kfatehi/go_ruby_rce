@@ -2,6 +2,8 @@
 
 A remote (ruby) code execution agent (webserver) written in Go.
 
+INCOMPLETE/WIP/ABANDONED BRAINSTORMING PROJECT
+
 ## Disclaimer
 **This dangerous project is intended to run on a private network behind a firewall!
 Only authorized users should be able to cause interactions with this program!
