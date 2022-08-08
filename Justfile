@@ -1,9 +1,10 @@
 deps:
 	go get
-	go get github.com/jessevdk/go-assets-builder
 
 assets:
+	go get github.com/jessevdk/go-assets-builder
 	go run github.com/jessevdk/go-assets-builder assets -o assets.go
+	go mod tidy
 
 run:
 	go run .
