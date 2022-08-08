@@ -1,11 +1,13 @@
-name: Go
+name: test and build
 
 on:
   push:
-    tags:
-    - '*'
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -21,21 +23,3 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-
-  releases-matrix:
-    name: Release Go Binary
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        goos: [linux, darwin]
-        goarch: [amd64, arm64]
-    steps:
-    - uses: actions/checkout@v3
-    - uses: wangyoucao577/go-release-action@v1.30
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        goos: ${{ matrix.goos }}
-        goarch: ${{ matrix.goarch }}
-        goversion: "https://dl.google.com/go/go1.19.linux-amd64.tar.gz"
-        binary_name: "rce"
-        extra_files: README.md
