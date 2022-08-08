@@ -46,36 +46,36 @@ func setupRouter() *gin.Engine {
 	ruby.POST("/validate", func(ctx *gin.Context) {
 		val, err := Assets.Open("/assets/validator.rb")
 		if err != nil {
-			ctx.String(http.StatusInternalServerError, "asset open error: %s", err.Error())
+			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
 			return
 		}
 		valsrc, err := ioutil.ReadAll(val)
 		if err != nil {
-			ctx.String(http.StatusInternalServerError, "asset read error: %s", err.Error())
+			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
 			return
 		}
 		rubyCmd := exec.Command(getRuby(), "-e", string(valsrc))
 		stdin, err := rubyCmd.StdinPipe()
 		if err != nil {
-			ctx.String(http.StatusInternalServerError, "stdin creation error: %s", err.Error())
+			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
 			return
 		}
 		file, err := ctx.FormFile("file")
 		if err != nil {
-			ctx.String(http.StatusBadRequest, "get form err: %s", err.Error())
+			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
 			return
 		}
 		openedFile, err := file.Open()
 		if err != nil {
-			ctx.String(http.StatusBadRequest, "open file error: %s", err.Error())
+			ctx.Data(http.StatusInternalServerError, "application/json", []byte(`{"error":"something went wrong"}`))
 			return
 		}
 		sourceCode, _ := ioutil.ReadAll(openedFile)
 		io.WriteString(stdin, string(sourceCode))
 		stdin.Close()
-		rubyOut, err := rubyCmd.Output()
+		rubyOut, err := rubyCmd.CombinedOutput()
 		if err != nil {
-			ctx.String(http.StatusInternalServerError, "ruby invocation error: %s\n%s", err.Error(), string(rubyOut))
+			ctx.Data(http.StatusBadRequest, "application/json", rubyOut)
 			return
 		}
 		ctx.Data(http.StatusOK, "application/json", rubyOut)

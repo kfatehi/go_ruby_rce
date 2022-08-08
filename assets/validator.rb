@@ -1,7 +1,14 @@
 require 'ripper'
 require 'json'
+
+def exit_with_error message
+    STDERR.puts JSON.generate({ error: message })
+    exit 1
+end
+
 sexp = Ripper.sexp(ARGF)
-raise "could not parse ruby" unless sexp
+
+exit_with_error("parser did not understand your program") unless sexp
 
 # scan top-level functions for one called run
 
@@ -10,7 +17,7 @@ top_run_funcs = sexp[1].select do |s|
 end
 
 if top_run_funcs.size == 0
-    raise "no run function detected at top level"
+    exit_with_error "no top-level run function detected in your program"
 end
 # get_run_func_params(top_run_funcs.last)
 rf = top_run_funcs.last
